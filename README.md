@@ -9,6 +9,8 @@ A *mixture model* is a probabilistic model that combines multiple components to 
 
 *Finite mixture model* is a classical formulation of mixture model, which requires the number of components, often denoted by *K*, to be fixed before training. The *Expectation-Maximization (EM)* algorithm is usually used to estimate a mixture model from data.
 
+#### Basic Usage
+
 The function ``fit_fmm`` fits a mixture model to a given data set:
 
 ```julia
@@ -41,8 +43,7 @@ This function returns a struct of type ``FiniteMixtureEMResults``, which contain
 * ``converged``: whether the procedure converged;
 * ``objective``: the objective function value of the last iteration.
 
-
-Examples:
+#### Examples
 
 ```julia
 # train a Gaussian mixture model with 5 components, showing progress information at each iteration
@@ -60,6 +61,13 @@ r = fit_fmm(MultivariateNormal{PDMat}, x, 5, fmm_em())
 **Note:**
 
 In [*Distributions.jl*](https://github.com/JuliaStats/Distributions.jl), the type ``MultivariateNormal`` takes a type argument that specifies the form of covariance matrix. Specifically, ``MultivariateNormal{PDMat}`` uses full covariance, ``MultivariateNormal{PDiagMat}`` uses diagonal covariance, while ``MultivariateNormal{ScalMat}`` uses a covariance of the form ``s * I``. 
+
+The package provides a demo in ``demo/gmm.jl`` to demonstrate the use of this package in fitting Gaussian mixture model. Below is a screenshot of the result:
+
+![gmm_demo](lindahua.github.com/repository/demo/gmm_demo.jpg)
+
+
+#### Use User-supplied Q matrix
 
 
 By default, this function initializes the soft assignment matrix ``Q`` randomly. The users can also provide their own version of initial Q-matrix, using the function ``fit_fmm!``:
