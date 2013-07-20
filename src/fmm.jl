@@ -113,6 +113,9 @@ function fit_fmm!{C<:Distribution}(estimator::AbstractModelEstimator{C},
 	return FiniteMixtureEMResults{C}(mixture, Q, L, t, converged, objv)
 end
 
+function fit_fmm!{C<:Distribution}(dty::Type{C}, data, Q::Matrix{Float64}, alg::FiniteMixtureEM)
+	fit_fmm!(MLE_Estimator(C), data, Q, alg)
+end
 
 function fit_fmm{C<:Distribution}(dty::Type{C}, data, K::Int, alg::FiniteMixtureEM)
 	n = nsamples(C, data)
