@@ -10,10 +10,10 @@ end
 function fmm_em(;
 	maxiter::Integer=100, 
 	tol::Real=1.0e-6, 
-	display::Symbol=:iter, 
+	display::Symbol=:none, 
 	alpha::Float64=1.0)
 
-	FiniteMixtureEMOptions(maxiter, tol, display, alpha)
+	FiniteMixtureEM(maxiter, tol, display, alpha)
 end
 
 immutable FiniteMixtureEMResults{C}
@@ -31,7 +31,7 @@ function fit_fmm!{C<:Distribution}(estimator::AbstractModelEstimator{C},
 
 	# basic numbers
 
-	n = nsamples(C, x)
+	n = nsamples(C, data)
 	@check_argdims size(Q, 1) == n
 
 	K = size(Q, 2)
@@ -41,7 +41,7 @@ function fit_fmm!{C<:Distribution}(estimator::AbstractModelEstimator{C},
 
 	# prepare storage
 
-	components = Array(Comp, K)
+	components = Array(C, K)
 	L = Array(Float64, n, K)
 	E = Array(Float64, n, K)
 	pi = Array(Float64, K)
@@ -70,11 +70,11 @@ function fit_fmm!{C<:Distribution}(estimator::AbstractModelEstimator{C},
 		end
 
 		for k in 1 : K
-			comp = estimate(estimator, x, Q[:,k])
+			comp = fit(estimator, data, Q[:,k])
 			components[k] = comp
 
 			Lk = pointer_to_array(pointer(L, (k-1) * n + 1), n)
-			logpdf!(Lk, comp, x)
+			logpdf!(Lk, comp, data)
 		end 
 
 		# E-step
@@ -86,10 +86,8 @@ function fit_fmm!{C<:Distribution}(estimator::AbstractModelEstimator{C},
 		t_llik = dot(L, Q)
 		t_qent = sum(entropy!(qent, Q, 2))
 		t_lpri = 0.
-		if !isa(compest, MLEstimator)
-			for k in 1 : K
-				t_lpri += logpri(compest, components[k])
-			end
+		for k in 1 : K
+			t_lpri += logpri(estimator, components[k])
 		end
 
 		objv_pre = objv 
@@ -111,8 +109,8 @@ function fit_fmm!{C<:Distribution}(estimator::AbstractModelEstimator{C},
 		end
 	end
 
-	mixture = Mixture{Comp}(pi, components)
-	return FiniteMixtureEMResults{Comp}(mixture, Q, L, t, converged, objv)
+	mixture = Mixture(components, pi)
+	return FiniteMixtureEMResults{C}(mixture, Q, L, t, converged, objv)
 end
 
 
@@ -120,4 +118,5 @@ function fit_fmm{C<:Distribution}(dty::Type{C}, data, K::Int, alg::FiniteMixture
 	n = nsamples(C, data)
 	fit_fmm!(MLE_Estimator(C), data, qmatrix(n, K), alg)
 end
+
 

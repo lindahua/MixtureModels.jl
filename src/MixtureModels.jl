@@ -10,8 +10,13 @@ module MixtureModels
 	AbstractModelEstimator, MLE_Estimator, MAP_Estimator, 
 	
 	# utils
-	qmatrix, qmatrix!
+	qmatrix, qmatrix!,
+
+	# fmm
+	FiniteMixtureEM, FiniteMixtureEMResults, fmm_em,
+	fit_fmm!, fit_fmm
 
 	include("types.jl")
 	include("utils.jl")
+	include("fmm.jl")
 end

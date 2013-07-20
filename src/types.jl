@@ -25,7 +25,8 @@ end
 
 MLE_Estimator{C}(::Type{C}) = MLE_Estimator{C}()
 
-fit(est::MLE_Estimator, data, w::Vector{Float64}) = fit_mle(C, data, w)
+fit{C}(est::MLE_Estimator{C}, data, w::Vector{Float64}) = fit_mle(C, data; weights=w)
+logpri{C}(est::MLE_Estimator{C}, m::C) = 0.
 
 
 # TODO: Enable this when Distributions.jl supports MAP estimation
@@ -36,4 +37,4 @@ fit(est::MLE_Estimator, data, w::Vector{Float64}) = fit_mle(C, data, w)
 
 # MAP_Estimator{C, Pri}(::Type{C}, pri::Pri) = MAP_Estimator{C, Pri}(pri)
 
-# fit(est::MAP_Estimator, data, w::Vector{Float64}) = fit_map(C, est.prior, data, w)
+# fit(est::MAP_Estimator, data, w::Vector{Float64}) = fit_map(C, est.prior, data; weights=w)
