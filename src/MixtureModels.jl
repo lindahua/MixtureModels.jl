@@ -1,7 +1,17 @@
 module MixtureModels
 	using NumericExtensions
-	using Distribution
+	using MLBase
+	using Distributions
+
+	export
+
+	# types
+	Mixture, ncomponents, 
+	AbstractModelEstimator, MLE_Estimator, MAP_Estimator, 
+	
+	# utils
+	qmatrix, qmatrix!
 
 	include("types.jl")
-	include("fmm.jl")
+	include("utils.jl")
 end
