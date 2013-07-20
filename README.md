@@ -64,7 +64,7 @@ In [*Distributions.jl*](https://github.com/JuliaStats/Distributions.jl), the typ
 
 The package provides a demo in ``demo/gmm.jl`` to demonstrate the use of this package in fitting Gaussian mixture model. Below is a screenshot of the result:
 
-![gmm_demo](demo/gmm_demo.jpg)
+![gmm_demo](demo/gmm_demo.png)
 
 
 #### Use User-supplied Q matrix
