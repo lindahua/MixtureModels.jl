@@ -25,7 +25,7 @@ end
 
 MLE_Estimator{C}(::Type{C}) = MLE_Estimator{C}()
 
-fit{C}(est::MLE_Estimator{C}, data, w::Vector{Float64}) = fit_mle(C, data; weights=w)
+fit{C}(est::MLE_Estimator{C}, data, w::Vector{Float64}) = fit_mle(C, data, w)
 logpri{C}(est::MLE_Estimator{C}, m::C) = 0.
 
 
