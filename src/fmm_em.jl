@@ -1,4 +1,4 @@
-# Estimation of finite mixture model
+# Estimation of finite mixture model using EM
 
 immutable FiniteMixtureEM
 	maxiter::Int
@@ -26,12 +26,12 @@ immutable FiniteMixtureEMResults{C}
 end
 
 
-function fit_fmm!{C<:Distribution}(estimator::AbstractModelEstimator{C}, 
+function fit_fmm!{C<:Distribution}(estimator::Estimator{C}, 
 	data, Q::Matrix{Float64}, alg::FiniteMixtureEM)
 
 	# basic numbers
 
-	n = nsamples(C, data)
+	n = nsamples(estimator, data)
 	@check_argdims size(Q, 1) == n
 
 	K = size(Q, 2)
@@ -70,11 +70,9 @@ function fit_fmm!{C<:Distribution}(estimator::AbstractModelEstimator{C},
 		end
 
 		for k in 1 : K
-			comp = fit(estimator, data, Q[:,k])
+			comp::C = estimate(estimator, data, refcolumn(Q, k))
 			components[k] = comp
-
-			Lk = pointer_to_array(pointer(L, (k-1) * n + 1), n)
-			logpdf!(Lk, comp, data)
+			logpdf!(refcolumn(L, k), comp, data)
 		end 
 
 		# E-step
@@ -87,7 +85,7 @@ function fit_fmm!{C<:Distribution}(estimator::AbstractModelEstimator{C},
 		t_qent = sum(entropy!(qent, Q, 2))
 		t_lpri = 0.
 		for k in 1 : K
-			t_lpri += logpri(estimator, components[k])
+			t_lpri += prior_score(estimator, components[k])
 		end
 
 		objv_pre = objv 
@@ -114,12 +112,12 @@ function fit_fmm!{C<:Distribution}(estimator::AbstractModelEstimator{C},
 end
 
 function fit_fmm!{C<:Distribution}(dty::Type{C}, data, Q::Matrix{Float64}, alg::FiniteMixtureEM)
-	fit_fmm!(MLE_Estimator(C), data, Q, alg)
+	fit_fmm!(MLEstimator(C), data, Q, alg)
 end
 
 function fit_fmm{C<:Distribution}(dty::Type{C}, data, K::Int, alg::FiniteMixtureEM)
 	n = nsamples(C, data)
-	fit_fmm!(MLE_Estimator(C), data, qmatrix(n, K), alg)
+	fit_fmm!(MLEstimator(C), data, qmatrix(n, K), alg)
 end
 
 

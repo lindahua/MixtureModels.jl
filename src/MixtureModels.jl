@@ -7,7 +7,6 @@ module MixtureModels
 
 	# types
 	Mixture, ncomponents, 
-	AbstractModelEstimator, MLE_Estimator, MAP_Estimator, 
 	
 	# utils
 	qmatrix, qmatrix!,
@@ -18,5 +17,5 @@ module MixtureModels
 
 	include("types.jl")
 	include("utils.jl")
-	include("fmm.jl")
+	include("fmm_em.jl")
 end

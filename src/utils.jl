@@ -1,5 +1,9 @@
 ### Utilities
 
+# take a column
+
+refcolumn(x::Matrix, j::Integer) = (n = size(x,1); pointer_to_array(pointer(x, (j-1) * n + 1), n))
+
 # Functions to construct q-matrix
 
 function qmatrix!(q::Array{Float64}, labels::Vector{Int})
