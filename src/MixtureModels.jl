@@ -2,6 +2,7 @@ module MixtureModels
 	using NumericExtensions
 	using MLBase
 	using Distributions
+	using PDMats
 
 	export
 
